@@ -1,0 +1,8 @@
+{
+  "screensDir": "src/screens",
+  "css": [
+    "src/index.css"
+  ],
+  "kind": "design",
+  "title": "Crumb & Co Bakehouse"
+}

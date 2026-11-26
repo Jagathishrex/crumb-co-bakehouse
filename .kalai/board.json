@@ -1,0 +1,32 @@
+{
+  "screens": [
+    {
+      "id": "src/screens/Home.tsx",
+      "file": "src/screens/Home.tsx",
+      "x": 0,
+      "y": 0,
+      "width": 1280,
+      "height": 3317,
+      "mode": "light",
+      "order": "G",
+      "viewportHeight": 860
+    },
+    {
+      "id": "@design-system",
+      "file": "@design-system",
+      "x": -1300,
+      "y": 0,
+      "width": 1100,
+      "height": 1700,
+      "mode": "light",
+      "order": "V"
+    }
+  ],
+  "pages": [
+    {
+      "id": "page-1",
+      "name": "Page 1",
+      "order": "V"
+    }
+  ]
+}

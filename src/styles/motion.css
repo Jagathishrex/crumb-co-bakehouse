@@ -1,0 +1,148 @@
+/* Kalai motion: spring easings, loops (loop-*) and the scroll trigger (reveal-on-scroll) used by the Animate tab,
+   on top of tw-animate-css (animate-in fade-in slide-in-from-bottom-6 …). Time them with animation-duration-*, delay-*,
+   ease-*, repeat-*, direction-* and fill-mode-* classes. */
+@theme {
+  --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-snappy: linear(0, 0.027, 0.078, 0.147, 0.239, 0.324, 0.408, 0.504, 0.58, 0.65, 0.714, 0.778, 0.826, 0.867, 0.907, 0.935, 0.957, 0.978, 0.991, 1.001, 1.009, 1.015, 1.018, 1.02, 1.02, 1.02, 1.019, 1.017, 1.016, 1.014, 1.012, 1.01, 1.009, 1.007, 1.006, 1.005, 1.004, 1.003, 1.002, 1.001, 1);
+  --ease-gentle: linear(0, 0.036, 0.115, 0.222, 0.342, 0.465, 0.584, 0.692, 0.787, 0.867, 0.933, 0.983, 1.02, 1.046, 1.063, 1.07, 1.072, 1.069, 1.063, 1.055, 1.046, 1.037, 1.029, 1.021, 1.014, 1.009, 1.004, 1.001, 0.998, 0.996, 0.995, 0.995, 0.995, 0.995, 0.996, 0.996, 0.997, 0.997, 0.998, 0.999, 1);
+  --ease-bouncy: linear(0, 0.124, 0.407, 0.739, 1.018, 1.221, 1.315, 1.312, 1.241, 1.138, 1.034, 0.957, 0.909, 0.896, 0.909, 0.938, 0.973, 1.002, 1.023, 1.033, 1.032, 1.025, 1.014, 1.004, 0.996, 0.991, 0.989, 0.99, 0.994, 0.997, 1, 1.002, 1.003, 1.003, 1.003, 1.001, 1, 1, 0.999, 0.999, 1);
+}
+
+@keyframes kalai-pulse { 50% { opacity: 0.5; } }
+@utility loop-pulse {
+  animation: kalai-pulse var(--tw-animation-duration, 2000ms) var(--tw-ease, ease-in-out) var(--tw-animation-delay, 0s) var(--tw-animation-iteration-count, 1) var(--tw-animation-direction, normal) var(--tw-animation-fill-mode, none);
+}
+
+@keyframes kalai-spin { to { transform: rotate(360deg); } }
+@utility loop-spin {
+  animation: kalai-spin var(--tw-animation-duration, 1000ms) var(--tw-ease, linear) var(--tw-animation-delay, 0s) var(--tw-animation-iteration-count, 1) var(--tw-animation-direction, normal) var(--tw-animation-fill-mode, none);
+}
+
+@keyframes kalai-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-25%); } }
+@utility loop-bounce {
+  animation: kalai-bounce var(--tw-animation-duration, 1000ms) var(--tw-ease, ease-in-out) var(--tw-animation-delay, 0s) var(--tw-animation-iteration-count, 1) var(--tw-animation-direction, normal) var(--tw-animation-fill-mode, none);
+}
+
+@keyframes kalai-ping { 75%, 100% { transform: scale(2); opacity: 0; } }
+@utility loop-ping {
+  animation: kalai-ping var(--tw-animation-duration, 1000ms) var(--tw-ease, cubic-bezier(0, 0, 0.2, 1)) var(--tw-animation-delay, 0s) var(--tw-animation-iteration-count, 1) var(--tw-animation-direction, normal) var(--tw-animation-fill-mode, none);
+}
+
+@keyframes kalai-float { 50% { transform: translateY(-8px); } }
+@utility loop-float {
+  animation: kalai-float var(--tw-animation-duration, 3000ms) var(--tw-ease, ease-in-out) var(--tw-animation-delay, 0s) var(--tw-animation-iteration-count, 1) var(--tw-animation-direction, normal) var(--tw-animation-fill-mode, none);
+}
+
+@keyframes kalai-wiggle { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
+@utility loop-wiggle {
+  animation: kalai-wiggle var(--tw-animation-duration, 1000ms) var(--tw-ease, ease-in-out) var(--tw-animation-delay, 0s) var(--tw-animation-iteration-count, 1) var(--tw-animation-direction, normal) var(--tw-animation-fill-mode, none);
+}
+
+@keyframes kalai-shake { 0%, 100% { transform: none; } 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
+@utility loop-shake {
+  animation: kalai-shake var(--tw-animation-duration, 500ms) var(--tw-ease, ease-in-out) var(--tw-animation-delay, 0s) var(--tw-animation-iteration-count, 1) var(--tw-animation-direction, normal) var(--tw-animation-fill-mode, none);
+}
+
+@keyframes kalai-heartbeat { 0%, 100% { transform: scale(1); } 15% { transform: scale(1.12); } 30% { transform: scale(1); } 45% { transform: scale(1.08); } }
+@utility loop-heartbeat {
+  animation: kalai-heartbeat var(--tw-animation-duration, 1200ms) var(--tw-ease, ease-in-out) var(--tw-animation-delay, 0s) var(--tw-animation-iteration-count, 1) var(--tw-animation-direction, normal) var(--tw-animation-fill-mode, none);
+}
+
+@keyframes kalai-marquee { to { transform: translateX(-50%); } }
+@utility loop-marquee {
+  animation: kalai-marquee var(--tw-animation-duration, 12000ms) var(--tw-ease, linear) var(--tw-animation-delay, 0s) var(--tw-animation-iteration-count, 1) var(--tw-animation-direction, normal) var(--tw-animation-fill-mode, none);
+}
+
+/* In view: plays once when the element scrolls into view (CSS animation-trigger, Chrome 146+). */
+@utility reveal {
+  --tw-animation-fill-mode: both;
+  timeline-trigger: --reveal view() entry 25% exit 75%;
+  animation-trigger: --reveal play-once;
+}
+/* In view, again on every entry. */
+@utility reveal-repeat {
+  --tw-animation-fill-mode: both;
+  timeline-trigger: --reveal view() entry 25% exit 75%;
+  animation-trigger: --reveal replay reset;
+}
+/* Follows the scroll: progress tracks the element moving into view. */
+@utility reveal-on-scroll {
+  animation-timeline: view();
+  animation-range: entry 0% cover 35%;
+}
+
+/* Stagger: on a parent, each child starts N ms after the one before (works for .map() lists too). */
+@utility stagger-* {
+  --k-stagger: calc(--value(integer) * 1ms);
+  & > * {
+    animation-delay: calc(var(--tw-animation-delay, 0ms) + (sibling-index() - 1) * var(--k-stagger));
+  }
+}
+
+/* Screen transitions: navigate("Pricing", { type: "push-left" }) runs a View Transition. Elements with the
+   same [view-transition-name:x] class on both screens morph into each other (Figma's Smart Animate). */
+::view-transition-group(*),
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation-duration: var(--k-vt-duration, 300ms);
+  animation-timing-function: var(--k-vt-ease, ease-out);
+}
+html:active-view-transition-type(push-left) { &::view-transition-old(root) { animation-name: k-out-left; } &::view-transition-new(root) { animation-name: k-in-right; } }
+html:active-view-transition-type(push-right) { &::view-transition-old(root) { animation-name: k-out-right; } &::view-transition-new(root) { animation-name: k-in-left; } }
+html:active-view-transition-type(push-up) { &::view-transition-old(root) { animation-name: k-out-up; } &::view-transition-new(root) { animation-name: k-in-down; } }
+html:active-view-transition-type(move-in-left) { &::view-transition-old(root) { animation: none; } &::view-transition-new(root) { animation-name: k-in-right; } }
+html:active-view-transition-type(move-in-up) { &::view-transition-old(root) { animation: none; } &::view-transition-new(root) { animation-name: k-in-down; } }
+html:active-view-transition-type(slide-in-left) { &::view-transition-new(root) { animation-name: k-in-right-30, -ua-view-transition-fade-in; } }
+@keyframes k-out-left { to { translate: -100% 0; } }
+@keyframes k-out-right { to { translate: 100% 0; } }
+@keyframes k-out-up { to { translate: 0 -100%; } }
+@keyframes k-in-right { from { translate: 100% 0; } }
+@keyframes k-in-left { from { translate: -100% 0; } }
+@keyframes k-in-down { from { translate: 0 100%; } }
+@keyframes k-in-right-30 { from { translate: 30% 0; } }
+
+/* Visitors who ask for less motion get the end states without the movement. */
+@media (prefers-reduced-motion: reduce) {
+  :where(*:not(.motion-keep)), :where(*:not(.motion-keep))::before, :where(*:not(.motion-keep))::after {
+    animation-duration: 1ms !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+}
+
+/* Keyframes made in the Animate tab. */
+
+/* Kalai transitions: every direction (Push, Move in, Move out, Slide in, Slide out). */
+html:active-view-transition-type(move-out-left, move-out-right, move-out-up, move-out-down, slide-out-left, slide-out-right, slide-out-up, slide-out-down) { &::view-transition-old(root) { z-index: 2; } }
+html:active-view-transition-type(move-out-left) { &::view-transition-old(root) { animation-name: kt-to-left; } &::view-transition-new(root) { animation: none; } }
+html:active-view-transition-type(slide-out-left) { &::view-transition-old(root) { animation-name: kt-to-left-30, -ua-view-transition-fade-out; } &::view-transition-new(root) { animation: none; } }
+@keyframes kt-to-left { to { translate: -100% 0; } }
+@keyframes kt-from-left { from { translate: 100% 0; } }
+@keyframes kt-to-left-30 { to { translate: -30% 0; } }
+@keyframes kt-from-left-30 { from { translate: 30% 0; } }
+html:active-view-transition-type(move-in-right) { &::view-transition-old(root) { animation: none; } &::view-transition-new(root) { animation-name: kt-from-right; } }
+html:active-view-transition-type(move-out-right) { &::view-transition-old(root) { animation-name: kt-to-right; } &::view-transition-new(root) { animation: none; } }
+html:active-view-transition-type(slide-in-right) { &::view-transition-new(root) { animation-name: kt-from-right-30, -ua-view-transition-fade-in; } }
+html:active-view-transition-type(slide-out-right) { &::view-transition-old(root) { animation-name: kt-to-right-30, -ua-view-transition-fade-out; } &::view-transition-new(root) { animation: none; } }
+@keyframes kt-to-right { to { translate: 100% 0; } }
+@keyframes kt-from-right { from { translate: -100% 0; } }
+@keyframes kt-to-right-30 { to { translate: 30% 0; } }
+@keyframes kt-from-right-30 { from { translate: -30% 0; } }
+html:active-view-transition-type(move-out-up) { &::view-transition-old(root) { animation-name: kt-to-up; } &::view-transition-new(root) { animation: none; } }
+html:active-view-transition-type(slide-in-up) { &::view-transition-new(root) { animation-name: kt-from-up-30, -ua-view-transition-fade-in; } }
+html:active-view-transition-type(slide-out-up) { &::view-transition-old(root) { animation-name: kt-to-up-30, -ua-view-transition-fade-out; } &::view-transition-new(root) { animation: none; } }
+@keyframes kt-to-up { to { translate: 0 -100%; } }
+@keyframes kt-from-up { from { translate: 0 100%; } }
+@keyframes kt-to-up-30 { to { translate: 0 -30%; } }
+@keyframes kt-from-up-30 { from { translate: 0 30%; } }
+html:active-view-transition-type(push-down) { &::view-transition-old(root) { animation-name: kt-to-down; } &::view-transition-new(root) { animation-name: kt-from-down; } }
+html:active-view-transition-type(move-in-down) { &::view-transition-old(root) { animation: none; } &::view-transition-new(root) { animation-name: kt-from-down; } }
+html:active-view-transition-type(move-out-down) { &::view-transition-old(root) { animation-name: kt-to-down; } &::view-transition-new(root) { animation: none; } }
+html:active-view-transition-type(slide-in-down) { &::view-transition-new(root) { animation-name: kt-from-down-30, -ua-view-transition-fade-in; } }
+html:active-view-transition-type(slide-out-down) { &::view-transition-old(root) { animation-name: kt-to-down-30, -ua-view-transition-fade-out; } &::view-transition-new(root) { animation: none; } }
+@keyframes kt-to-down { to { translate: 0 100%; } }
+@keyframes kt-from-down { from { translate: 0 -100%; } }
+@keyframes kt-to-down-30 { to { translate: 0 30%; } }
+@keyframes kt-from-down-30 { from { translate: 0 -30%; } }

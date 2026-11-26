@@ -1,0 +1,81 @@
+/* Kalai glass: Figma's Glass effect (Apple's Liquid Glass) as a utility. `glass` draws it; each glass-* class sets one
+   value, and a value left out is Figma's default:
+     glass-light-<0-100>        light intensity (%, default 80)
+     glass-light-angle-<0-359>  the angle the light shines toward (degrees, default 315: from the top left)
+     glass-refraction-<0-100>   how much the rim bends what is behind (default 80)
+     glass-depth-<1-100>        how thick the glass is: the width of the bent, lit rim (default 20)
+     glass-dispersion-<0-100>   colour fringes in the bent rim (default 50)
+     glass-frost-<px>           background blur (CSS px, default 2: Figma's default frost of 4, as Figma's blur is twice CSS's)
+     glass-splay-<0-100>        how far the highlight spreads (default 0; kept, but Figma's barely changes the look)
+   Plain CSS draws the frost, the edge light and the shade in every browser (it uses ::before and ::after). Refraction
+   and dispersion need an SVG lens behind it: Kalai's preview builds one per glass layer where the browser can
+   (Chromium) and hands it over in --kalai-glass-lens; elsewhere the glass is frosted without bending. The lens also
+   draws the light, measured against Figma's, and sets --kalai-glass-css-ring to 0 so the CSS light steps aside.
+   Like Figma's, the glass adds no saturation, brightness or shadow of its own. */
+
+@property --glass-light { syntax: '<number>'; inherits: false; initial-value: 80; }
+@property --glass-light-angle { syntax: '<number>'; inherits: false; initial-value: 315; }
+@property --glass-refraction { syntax: '<number>'; inherits: false; initial-value: 80; }
+@property --glass-depth { syntax: '<number>'; inherits: false; initial-value: 20; }
+@property --glass-dispersion { syntax: '<number>'; inherits: false; initial-value: 50; }
+@property --glass-frost { syntax: '<number>'; inherits: false; initial-value: 2; }
+@property --glass-splay { syntax: '<number>'; inherits: false; initial-value: 0; }
+@property --kalai-glass-lens { syntax: '*'; inherits: false; }
+
+@utility glass {
+  --kalai-glass-angle: calc(var(--glass-light-angle) * 1deg);
+  --kalai-glass-light: calc(var(--glass-light) / 100);
+  /* Where the light comes from, as a conic-gradient angle (0 up, clockwise). */
+  --kalai-glass-from: calc(270deg - var(--kalai-glass-angle));
+  --kalai-glass-shade-offset: calc(var(--glass-depth) * 0.25px);
+  --kalai-glass-shade-blur: calc(var(--glass-depth) * 0.6px);
+  /* 1: CSS draws the light. Set on each glass so one inside another doesn't inherit its 0. */
+  --kalai-glass-css-ring: 1;
+  -webkit-backdrop-filter: blur(calc(var(--glass-frost) * 1px));
+  /* Frost before the lens: with the lens first, Chromium drops the blur after it. */
+  backdrop-filter: blur(calc(var(--glass-frost) * 1px)) var(--kalai-glass-lens,);
+
+  /* The edge light: a 1px line, bright where the edge faces the light, a little less where it faces away, gone where
+     it is side-on. Kalai's preview sets --kalai-glass-css-ring to 0 where its lens draws the light. */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    padding: 1px;
+    opacity: var(--kalai-glass-css-ring);
+    background: conic-gradient(
+      from var(--kalai-glass-from),
+      rgb(255 255 255 / calc(var(--kalai-glass-light) * 0.95)) 0deg 40deg,
+      transparent 75deg 105deg,
+      rgb(255 255 255 / calc(var(--kalai-glass-light) * 0.72)) 140deg 220deg,
+      transparent 255deg 285deg,
+      rgb(255 255 255 / calc(var(--kalai-glass-light) * 0.95)) 320deg
+    );
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  }
+
+  /* Depth: a faint shade across the rim, darker on the lit side and lighter on the other. Drawn on pseudo-elements
+     so the layer's own shadows and strokes stay as they are; they read the --kalai-glass-* values worked out above. */
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    box-shadow:
+      inset calc(cos(var(--kalai-glass-angle)) * var(--kalai-glass-shade-offset)) calc(sin(var(--kalai-glass-angle)) * -1 * var(--kalai-glass-shade-offset)) var(--kalai-glass-shade-blur) 0 rgb(0 0 0 / calc(var(--kalai-glass-light) * 0.07 * var(--kalai-glass-css-ring))),
+      inset calc(cos(var(--kalai-glass-angle)) * -1 * var(--kalai-glass-shade-offset)) calc(sin(var(--kalai-glass-angle)) * var(--kalai-glass-shade-offset)) var(--kalai-glass-shade-blur) 0 rgb(255 255 255 / calc(var(--kalai-glass-light) * 0.07 * var(--kalai-glass-css-ring)));
+  }
+}
+
+@utility glass-light-* { --glass-light: --value(number, [number]); }
+@utility glass-light-angle-* { --glass-light-angle: --value(number, [number]); }
+@utility glass-refraction-* { --glass-refraction: --value(number, [number]); }
+@utility glass-depth-* { --glass-depth: --value(number, [number]); }
+@utility glass-dispersion-* { --glass-dispersion: --value(number, [number]); }
+@utility glass-frost-* { --glass-frost: --value(number, [number]); }
+@utility glass-splay-* { --glass-splay: --value(number, [number]); }
